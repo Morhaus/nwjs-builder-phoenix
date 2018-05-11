@@ -1,5 +1,5 @@
 {
-  "name": "nwjs-builder-phoenix",
+  "name": "@morhaus/nwjs-builder-phoenix",
   "version": "1.14.7",
   "description": "",
   "main": "./dist/lib/index.js",
