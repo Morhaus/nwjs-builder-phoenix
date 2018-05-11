@@ -6,7 +6,7 @@ const debug = require('debug')('build:downloader');
 import { DownloaderBase } from './common/DownloaderBase';
 import { mergeOptions } from './util';
 
-interface IDownloaderOptions {
+export interface IDownloaderOptions {
     platform?: string;
     arch?: string;
     version?: string;
@@ -15,6 +15,7 @@ interface IDownloaderOptions {
     useCaches?: boolean;
     showProgress?: boolean;
     destination?: string;
+    forceCaches?: boolean;
 }
 
 export class Downloader extends DownloaderBase {
@@ -28,6 +29,7 @@ export class Downloader extends DownloaderBase {
         useCaches: true,
         showProgress: true,
         destination: DownloaderBase.DEFAULT_DESTINATION,
+        forceCaches: false,
     };
 
     public options: IDownloaderOptions;
@@ -66,6 +68,10 @@ export class Downloader extends DownloaderBase {
         debug('in fetch', 'url', url);
         debug('in fetch', 'filename', filename);
         debug('in fetch', 'path', path);
+
+        if (this.options.forceCaches && await this.isFileExists(path)) {
+            return path;
+        }
 
         try {
             if(await this.isFileExists(path) && await this.isFileSynced(url, path)) {

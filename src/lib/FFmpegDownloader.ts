@@ -10,7 +10,7 @@ const progress = require('request-progress');
 import { Event, DownloaderBase } from './common';
 import { mergeOptions, extractGeneric } from './util';
 
-interface IRequestProgress {
+export interface IRequestProgress {
     percent: number;
     speed: number;
     size: {
@@ -23,7 +23,7 @@ interface IRequestProgress {
     };
 }
 
-interface IFFmpegDownloaderOptions {
+export interface IFFmpegDownloaderOptions {
     platform?: string;
     arch?: string;
     version?: string;
@@ -31,6 +31,7 @@ interface IFFmpegDownloaderOptions {
     useCaches?: boolean;
     showProgress?: boolean;
     destination?: string;
+    forceCaches?: boolean;
 }
 
 export class FFmpegDownloader extends DownloaderBase {
@@ -43,6 +44,7 @@ export class FFmpegDownloader extends DownloaderBase {
         useCaches: true,
         showProgress: true,
         destination: DownloaderBase.DEFAULT_DESTINATION,
+        forceCaches: false,
     };
 
     public options: IFFmpegDownloaderOptions;
@@ -75,6 +77,10 @@ export class FFmpegDownloader extends DownloaderBase {
         debug('in fetch', 'url', url);
         debug('in fetch', 'filename', filename);
         debug('in fetch', 'path', path);
+
+        if (this.options.forceCaches && await this.isFileExists(path)) {
+            return path;
+        }
 
         try {
             if(await this.isFileExists(path) && await this.isFileSynced(url, path)) {

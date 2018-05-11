@@ -17,14 +17,14 @@ import { NsisVersionInfo, DownloaderBase } from './common';
 import { NsisComposer, NsisDiffer, Nsis7Zipper, nsisBuild } from './nsis-gen';
 import { mergeOptions, findExecutable, findFFmpeg, findRuntimeRoot, findExcludableDependencies, tmpName, tmpFile, tmpDir, fixWindowsVersion, copyFileAsync, extractGeneric, compress } from './util';
 
-interface IParseOutputPatternOptions {
+export interface IParseOutputPatternOptions {
     name: string;
     version: string;
     platform: string;
     arch: string;
 }
 
-interface IBuilderOptions {
+export interface IBuilderOptions {
     win?: boolean;
     mac?: boolean;
     linux?: boolean;
@@ -36,6 +36,7 @@ interface IBuilderOptions {
     concurrent?: boolean;
     mute?: boolean;
     destination?: string;
+    forceCaches?: boolean;
 }
 
 export class Builder {
@@ -52,6 +53,7 @@ export class Builder {
         concurrent: false,
         mute: true,
         destination: DownloaderBase.DEFAULT_DESTINATION,
+        forceCaches: Downloader.DEFAULT_OPTIONS.forceCaches,
     };
 
     public options: IBuilderOptions;
@@ -768,6 +770,7 @@ export class Builder {
             useCaches: true,
             showProgress: this.options.mute ? false : true,
             destination: this.options.destination,
+            forceCaches: this.options.forceCaches,
         });
 
         if(!this.options.mute) {
