@@ -30,6 +30,7 @@ export interface IFFmpegDownloaderOptions {
     mirror?: string;
     useCaches?: boolean;
     showProgress?: boolean;
+    destination?: string;
     forceCaches?: boolean;
 }
 
@@ -42,6 +43,7 @@ export class FFmpegDownloader extends DownloaderBase {
         mirror: 'https://github.com/iteufel/nwjs-ffmpeg-prebuilt/releases/download/',
         useCaches: true,
         showProgress: true,
+        destination: DownloaderBase.DEFAULT_DESTINATION,
         forceCaches: false,
     };
 
@@ -51,6 +53,10 @@ export class FFmpegDownloader extends DownloaderBase {
         super();
 
         this.options = mergeOptions(FFmpegDownloader.DEFAULT_OPTIONS, options);
+
+        if(this.options.destination !== this.destination) {
+            this.setDestination(this.options.destination);
+        }
 
         debug('in constructor', 'options', options);
 
